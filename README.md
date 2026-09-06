@@ -289,10 +289,11 @@ A conventional long-only 12–1 momentum strategy is constructed using the same 
 Monthly traded notional is approximated as:
 
 $$ T_{0,t} = \sum_i |w_{i,t}-w_{i,t-1}|$$
+
 Transaction cost is:
 
 $$
-C_t=TO_t\frac{c_{\mathrm{bps}}}{10{,}000}.
+C_t=T_{0,t}\frac{c_{\mathrm{bps}}}{10{,}000}.
 $$
 
 The default assumption is:
