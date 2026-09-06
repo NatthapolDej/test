@@ -87,7 +87,9 @@ The model uses the following monthly stock characteristics.
 * Six-month momentum
 * Twelve-minus-one-month momentum
 
-The 12–1 momentum feature excludes the most recent month: $\mathrm{Mom}_{12-1,t} = \frac{P_{t-1}}{P_{t-12}} - 1$
+The 12–1 momentum feature excludes the most recent month: 
+
+$$p_{12-1,t} = \frac{P_{t-1}}{P_{t-12}} - 1$$
 
 ### Volatility and downside risk
 
