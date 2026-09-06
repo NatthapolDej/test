@@ -66,7 +66,7 @@ Downloaded data are cached locally to reduce repeated API calls.
 A stock-month observation must satisfy:
 
 $$
-\text{price}\geq \ \$5
+\text{price}\geq \$5
 $$
 
 and:
