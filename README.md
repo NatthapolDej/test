@@ -381,6 +381,7 @@ TO_t
 |w_{i,t}-w_{i,t-1}|.
 $$
 
+$$ T_{0,t} = \sum_i |w_{i,t}-w_{i,t-1}|$$
 Transaction cost is:
 
 $$
