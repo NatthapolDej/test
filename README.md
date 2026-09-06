@@ -111,6 +111,7 @@ $$
 \operatorname{Std}(r_{t-62},\ldots,r_t)\sqrt{252}.
 $$
 
+$\sigma_{3m,t} = \text{Std} r_{t-62},\ldots,r_t\sqrt{252}.$
 ### Trend and return consistency
 
 * Distance from the 50-day moving average
