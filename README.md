@@ -4,7 +4,6 @@ This project develops and evaluates machine-learning models for ranking stocks b
 
 The project uses historical daily price and volume data to construct monthly momentum, volatility, trend, market-risk, and liquidity features. Logistic regression, random forest, and histogram gradient boosting models are evaluated using chronological out-of-sample predictions and realistic transaction-cost assumptions.
 
-> This project is intended for research and educational purposes. It is not investment advice.
 
 ## Project objectives
 
@@ -88,13 +87,7 @@ The model uses the following monthly stock characteristics.
 * Six-month momentum
 * Twelve-minus-one-month momentum
 
-The 12–1 momentum feature excludes the most recent month:
-
-```math
-\operatorname{Mom}_{12-1,t}
-=
-\frac{P_{t-1}}{P_{t-12}} - 1
-```
+The 12–1 momentum feature excludes the most recent month: $p_{12-1,t} = \frac{P_{t-1}}{P_{t-12}} - 1$
 
 ### Volatility and downside risk
 
@@ -105,13 +98,7 @@ The 12–1 momentum feature excludes the most recent month:
 
 For example, three-month annualized volatility is:
 
-$$
-\sigma_{3m,t}
-=
-\operatorname{Std}(r_{t-62},\ldots,r_t)\sqrt{252}.
-$$
-
-$\sigma_{3m,t} = \text{Std} r_{t-62},\ldots,r_t\sqrt{252}.$
+$\sigma_{3m,t} = \text{Std}(r_{t-62},\ldots,r_t) \sqrt{252}.$
 ### Trend and return consistency
 
 * Distance from the 50-day moving average
@@ -123,13 +110,7 @@ $\sigma_{3m,t} = \text{Std} r_{t-62},\ldots,r_t\sqrt{252}.$
 Six-month rolling beta is estimated as:
 
 $$
-\beta_{i,t}
-=
-\frac{
-\operatorname{Cov}(r_{i},r_m)
-}{
-\operatorname{Var}(r_m)
-}.
+\beta_{i,t} = \frac{\mathrm{Cov}(r_{i},r_m)}{\mathrm{Var}(r_m)}.
 $$
 
 ### Liquidity
@@ -139,11 +120,7 @@ $$
 
 The Amihud measure captures absolute price movement relative to trading activity:
 
-$$
-ILLIQ_{i,t}
-=
-\frac{|r_{i,t}|}{\text{dollar volume}_{i,t}}.
-$$
+$${ILLIQ}_{i,t} = \frac{|r_{i,t}|}{\text{dollar volume}_{i,t}}.$$
 
 Higher Amihud values indicate greater estimated price impact and lower liquidity.
 
@@ -153,11 +130,7 @@ Features are processed separately within each month.
 
 First, observations are winsorized using the 1st and 99th cross-sectional percentiles. The winsorized feature is then standardized:
 
-$$
-z_{i,t}
-=
-\frac{x_{i,t}-\mu_t}{\sigma_t},
-$$
+$$z_{i,t}=\frac{x_{i,t}-\mu_t}{\sigma_t},$$
 
 where \(\mu_t\) and \(\sigma_t\) are calculated across stocks available at date \(t\).
 
@@ -169,27 +142,17 @@ Missing feature values are handled inside each model pipeline using median imput
 
 The next-month stock return is:
 
-$$
-R_{i,t+1}
-=
-\frac{P_{i,t+1}}{P_{i,t}}-1.
-$$
+$$R_{i,t+1}=\frac{P_{i,t+1}}{P_{i,t}}-1.$$
 
 Relative return is defined as:
 
-$$
-R_{i,t+1}^{relative}
-=
-R_{i,t+1}-R_{m,t+1},
-$$
+$$R_{i,t+1}^{relative}=R_{i,t+1}-R_{m,t+1},$$
 
-where \(R_{m,t+1}\) is the next-month SPY return.
+where $R_{m,t+1}$ is the next-month SPY return.
 
 Stocks are ranked by relative return within each date. The classification target equals one for stocks in the highest future-return group:
 
-$$
-Y_{i,t}
-=
+$$Y_{i,t}=
 \begin{cases}
 1, & \text{if stock }i\text{ is in the future top quintile},\\
 0, & \text{otherwise}.
@@ -208,29 +171,14 @@ The logistic-regression pipeline contains:
 2. Standard scaling
 3. Regularized logistic regression
 
-The model estimates:
 
-$$
-P(Y=1\mid X)
-=
-\frac{1}{
-1+\exp[-(\beta_0+\boldsymbol{\beta}'X)]
-}.
-$$
-
-Class weights are balanced to account for the smaller positive class.
 
 ### Random forest
 
-The random forest combines 300 randomized decision trees. Tree depth and minimum leaf size are restricted to reduce overfitting.
 
-The model can capture nonlinear relationships and interactions such as high momentum being useful only when volatility is low.
 
 ### Histogram gradient boosting
 
-Histogram gradient boosting builds decision trees sequentially. Each new tree attempts to reduce the classification errors remaining from the previous trees.
-
-Histogram binning makes split selection computationally efficient, while a low learning rate, restricted leaf count, and L2 regularization limit model complexity.
 
 ## Out-of-sample design
 
@@ -277,47 +225,17 @@ Model predictions are evaluated using several complementary metrics.
 
 ROC-AUC measures the probability that an actual future top-quintile stock receives a higher model score than a non-top-quintile stock:
 
-$$
-AUC
-=
-P(S_{\text{winner}}>S_{\text{non-winner}}).
-$$
 
 An AUC of `0.50` represents random ordering.
 
 ### Top-quintile precision
-
-Precision measures the proportion of model-selected stocks that actually enter the realized top quintile:
-
-$$
-\text{Precision}
-=
-\frac{TP}{TP+FP}.
-$$
-
-Because approximately 20% of stocks receive positive labels, random selection has expected precision near `0.20`.
-
-Precision lift is:
-
-$$
-\text{Precision lift}
-=
-\frac{\text{model precision}}
-{\text{positive-class rate}}.
-$$
 
 ### Information coefficient
 
 Monthly Information Coefficient is calculated using cross-sectional Spearman rank correlation:
 
 $$
-IC_t
-=
-\operatorname{Corr}_{rank}
-\left(
-S_{i,t},
-R_{i,t+1}^{relative}
-\right).
+IC_t=\mathrm{Corr}_{rank}\left(S_{i,t},R_{i,t+1}^{relative}\right).
 $$
 
 A positive IC means stocks receiving higher model scores generally produce higher subsequent relative returns.
@@ -375,21 +293,11 @@ A conventional long-only 12–1 momentum strategy is constructed using the same 
 
 Monthly traded notional is approximated as:
 
-$$
-TO_t
-=
-\sum_i
-|w_{i,t}-w_{i,t-1}|.
-$$
-
 $$ T_{0,t} = \sum_i |w_{i,t}-w_{i,t-1}|$$
 Transaction cost is:
 
 $$
-C_t
-=
-TO_t
-\frac{c_{\mathrm{bps}}}{10{,}000}.
+C_t=TO_t\frac{c_{\mathrm{bps}}}{10{,}000}.
 $$
 
 The default assumption is:
@@ -400,11 +308,7 @@ $$
 
 Net portfolio return is:
 
-$$
-R_{p,t}^{net}
-=
-R_{p,t}^{gross}-C_t.
-$$
+$$R_{p,t}^{net}=R_{p,t}^{gross}-C_t.$$
 
 This cost model captures a basic turnover penalty but does not fully represent bid–ask variation, nonlinear market impact, short-borrow fees, financing costs, taxes, or execution delay.
 
@@ -424,64 +328,23 @@ Portfolio performance is evaluated using:
 
 Compound annual growth rate is:
 
-$$
-CAGR
-=
-\left(
-\frac{V_T}{V_0}
-\right)^{1/T}-1.
-$$
+$$CAGR=\left(\frac{V_T}{V_0}\right)^{1/T}-1.$$
 
 Maximum drawdown is:
 
 $$
-MDD
-=
-\min_t
-\left(
-\frac{W_t}{\max_{s\leq t}W_s}-1
-\right).
+MDD=\min_t\left(\frac{W_t}{\max_{s\leq t}W_s}-1\right).
 $$
 
 The zero-risk-free-rate Sharpe ratio is:
 
 $$
-SR
-=
-\frac{\bar r_m}{s_m}\sqrt{12}.
+SR=\frac{\bar r_m}{s_m}\sqrt{12}.
 $$
 
 For a more precise historical analysis, the contemporaneous Treasury-bill return can be subtracted from each monthly portfolio return.
 
-## Installation
 
-Clone the repository and install the required packages:
-
-```bash
-git clone <repository-url>
-cd <repository-name>
-
-python -m venv .venv
-source .venv/bin/activate
-
-pip install numpy pandas scipy scikit-learn matplotlib seaborn yfinance jupyter
-```
-
-On Windows, activate the environment with:
-
-```bash
-.venv\Scripts\activate
-```
-
-## Usage
-
-Start JupyterLab:
-
-```bash
-jupyter lab
-```
-
-Open the main notebook and run the cells in order.
 
 The workflow will:
 
@@ -513,7 +376,6 @@ Portfolio results:
 | HGB long-only           |  TBD |               TBD |    TBD |              TBD |              TBD |
 | Traditional momentum    |  TBD |               TBD |    TBD |              TBD |              TBD |
 
-Results should be interpreted using the complete set of diagnostics. A model with a positive ROC-AUC or IC does not necessarily produce attractive net portfolio performance.
 
 ## Limitations
 
@@ -521,15 +383,11 @@ This project is subject to several limitations:
 
 * Yahoo Finance data are suitable for research but not institutional execution analysis.
 * A fixed modern ticker list may introduce survivorship bias.
-* Missing and delisted-security returns require careful treatment.
 * The liquidity and price filters are simplified.
 * Corporate-action and point-in-time constituent data may be incomplete.
 * Transaction costs are represented by a constant basis-point assumption.
 * Long–short results exclude stock-borrow and financing costs.
 * Dollar neutrality does not guarantee beta or sector neutrality.
-* Hyperparameter selection can introduce data-snooping bias.
-* Historical relationships may not persist in future market regimes.
-* Backtested performance does not guarantee live performance.
 
 ## Possible extensions
 
@@ -548,16 +406,4 @@ Future improvements could include:
 * Comparison with XGBoost, LightGBM, and neural networks
 * Alternative markets and international equity universes
 
-## Reproducibility
 
-Randomized models use a fixed random seed:
-
-```python
-random_state = 42
-```
-
-Data ranges, universe definitions, feature parameters, transaction-cost assumptions, and test periods should be recorded with every reported result.
-
-## Disclaimer
-
-This repository is provided solely for educational and research purposes. It does not constitute financial advice, an investment recommendation, or an offer to buy or sell securities. Historical and backtested results do not guarantee future performance.
