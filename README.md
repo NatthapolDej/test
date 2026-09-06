@@ -132,7 +132,7 @@ First, observations are winsorized using the 1st and 99th cross-sectional percen
 
 $$z_{i,t}=\frac{x_{i,t}-\mu_t}{\sigma_t},$$
 
-where \(\mu_t\) and \(\sigma_t\) are calculated across stocks available at date \(t\).
+where $\mu_t$ and $\sigma_t$ are calculated across stocks available at date $t$.
 
 Cross-sectional standardization allows the model to interpret each characteristic relative to the contemporaneous stock universe. It also places features with different units on comparable scales.
 
