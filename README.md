@@ -223,11 +223,6 @@ Model predictions are evaluated using several complementary metrics.
 
 ### ROC-AUC
 
-ROC-AUC measures the probability that an actual future top-quintile stock receives a higher model score than a non-top-quintile stock:
-
-
-An AUC of `0.50` represents random ordering.
-
 ### Top-quintile precision
 
 ### Information coefficient
